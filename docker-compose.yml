@@ -1,0 +1,25 @@
+name: payment-reconciliation
+
+services:
+  db:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payment_reconciliation
+    ports:
+      - '5433:5432'
+    volumes:
+      # Postgres 18+ images keep data under /var/lib/postgresql (not .../data).
+      - db_data:/var/lib/postgresql
+      # Creates the *_test database the first time the volume is initialised.
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d payment_reconciliation']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db_data:

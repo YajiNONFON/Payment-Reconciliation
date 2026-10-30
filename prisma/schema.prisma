@@ -1,0 +1,38 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "cjs"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// An invoice issued to a customer. `reference` is the key payments are matched on.
+model Invoice {
+  id          Int      @id @default(autoincrement())
+  reference   String   @unique
+  customer    String
+  /// Amount in US cents (integer), never a decimal.
+  amountCents Int      @map("amount_cents")
+  issueDate   DateTime @map("issue_date") @db.Date
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("invoices")
+}
+
+/// A payment received. `reference` is NOT unique on purpose: the same reference
+/// appearing twice is one of the anomalies the reconciliation (day 2) reports.
+model Payment {
+  id          Int      @id @default(autoincrement())
+  reference   String
+  payer       String
+  /// Amount in US cents (integer), never a decimal.
+  amountCents Int      @map("amount_cents")
+  paidDate    DateTime @map("paid_date") @db.Date
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([reference])
+  @@map("payments")
+}

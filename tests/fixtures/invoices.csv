@@ -1,0 +1,4 @@
+reference,customer,amount,issue_date
+INV-001,Acme Ltd,125.50,2026-10-01
+INV-002,Globex,80,2026-10-03
+INV-003,Initech,19.99,2026-10-04
