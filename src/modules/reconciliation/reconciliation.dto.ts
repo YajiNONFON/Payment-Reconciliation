@@ -33,3 +33,8 @@ export interface Reconciliation {
   totals: Totals;
   items: ReportItem[];
 }
+
+export interface Report extends Reconciliation {
+  /** ISO 8601 timestamp of when the report was produced. */
+  generatedAt: string;
+}
